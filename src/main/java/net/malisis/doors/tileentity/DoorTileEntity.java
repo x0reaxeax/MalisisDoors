@@ -38,6 +38,7 @@ import net.malisis.core.util.syncer.Sync;
 import net.malisis.core.util.syncer.Syncable;
 import net.malisis.core.util.syncer.Syncer;
 import net.malisis.doors.DoorDescriptor;
+import net.malisis.doors.DoorDescriptor.RedstoneBehavior;
 import net.malisis.doors.DoorState;
 import net.malisis.doors.block.Door;
 import net.malisis.doors.movement.IDoorMovement;
@@ -196,6 +197,10 @@ public class DoorTileEntity extends TileEntity implements ITickable
 	{
 		boolean wasPowered = this.powered;
 		this.powered = powered;
+
+		// gtfo if getting touched while redstone locked
+		if (getDescriptor().getRedstoneBehavior() == RedstoneBehavior.REDSTONE_LOCK)
+			return;
 		if (wasPowered && !powered && !isDoubleDoorPowered())
 			close();
 		else if (!wasPowered && powered)
@@ -496,6 +501,16 @@ public class DoorTileEntity extends TileEntity implements ITickable
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.writeToNBT(nbt);
 		return new SPacketUpdateTileEntity(pos, 0, nbt);
+	}
+
+	@Override
+	public void onLoad()
+	{
+		// fetch redstone state on load, so that locked doors are not suddenly unlocked
+		super.onLoad();
+
+		if (!world.isRemote)
+			updatePowered();
 	}
 
 	@Override

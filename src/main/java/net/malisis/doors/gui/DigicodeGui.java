@@ -26,10 +26,11 @@ package net.malisis.doors.gui;
 
 import org.lwjgl.input.Keyboard;
 
-import net.malisis.core.client.gui.Anchor;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.container.UIContainer;
-import net.malisis.core.client.gui.render.BackgroundTexture.WindowBackground;
+import net.malisis.core.client.gui.component.element.Position;
+import net.malisis.core.client.gui.component.element.Size;
+import net.malisis.core.client.gui.render.TexturedBackground.WindowBackground;
 import net.malisis.doors.network.DigicodeMessage;
 import net.malisis.doors.tileentity.DoorTileEntity;
 
@@ -52,9 +53,12 @@ public class DigicodeGui extends MalisisGui
 	@Override
 	public void construct()
 	{
-		digicode = new Digicode(this, expected).setAnchor(Anchor.MIDDLE | Anchor.CENTER).register(this);
+		digicode = new Digicode(this, expected);
+		digicode.setPosition(Position.of(10, 10));
+		digicode.register(this);
 
-		UIContainer<?> window = new UIContainer<>(this, digicode.getWidth() + 20, digicode.getHeight() + 20);
+		UIContainer<?> window = new UIContainer<>(this, Size.of(digicode.size().width() + 20, digicode.size().height() + 20));
+		window.setPosition(Position.centered().middleAligned());
 		window.setBackground(new WindowBackground(this));
 		window.add(digicode);
 
