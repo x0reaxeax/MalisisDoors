@@ -27,6 +27,8 @@ package net.malisis.doors.gui;
 import net.malisis.core.client.gui.GuiRenderer;
 import net.malisis.core.client.gui.MalisisGui;
 import net.malisis.core.client.gui.component.container.UIContainer;
+import net.malisis.core.client.gui.component.element.Position;
+import net.malisis.core.client.gui.component.element.Size;
 import net.malisis.core.client.gui.component.interaction.UIButton;
 import net.malisis.core.client.gui.event.ComponentEvent;
 import net.malisis.core.renderer.font.FontOptions;
@@ -54,7 +56,7 @@ public class Digicode extends UIContainer<Digicode>
 	{
 		super(gui);
 
-		setSize(50, 80);
+		setSize(Size.of(50, 80));
 		expectedCode = expected;
 		createButtons(gui);
 	}
@@ -100,16 +102,33 @@ public class Digicode extends UIContainer<Digicode>
 			int x = ((i - 1) % 3) * 17;
 			int y = (i - 1) / 3 * (h + 2);
 
-			UIButton b = new UIButton(gui, "" + i).setSize(16, h).setPosition(x, oy + y);
+			UIButton b = new UIButton(gui, "" + i);
+			b.setSize(Size.of(16, h));
+			b.setPosition(Position.of(x, oy + y));
 			b.setName("" + i);
 
 			add(b);
 		}
 
-		add(new UIButton(gui, "C").setSize(16, h).setPosition(0, oy + 3 * (h + 2)).setName("C"));
-		add(new UIButton(gui, "0").setSize(16, h).setPosition(17, oy + 3 * (h + 2)).setName("0"));
+		UIButton clearButton = new UIButton(gui, "C");
+		clearButton.setSize(Size.of(16, h));
+		clearButton.setPosition(Position.of(0, oy + 3 * (h + 2)));
+		clearButton.setName("C");
+		add(clearButton);
+
+		UIButton zeroButton = new UIButton(gui, "0");
+		zeroButton.setSize(Size.of(16, h));
+		zeroButton.setPosition(Position.of(17, oy + 3 * (h + 2)));
+		zeroButton.setName("0");
+		add(zeroButton);
 		if (!StringUtils.isEmpty(expectedCode))
-			add(new UIButton(gui, "V").setSize(16, h).setPosition(34, oy + 3 * (h + 2)).setName("V"));
+		{
+			UIButton validateButton = new UIButton(gui, "V");
+			validateButton.setSize(Size.of(16, h));
+			validateButton.setPosition(Position.of(34, oy + 3 * (h + 2)));
+			validateButton.setName("V");
+			add(validateButton);
+		}
 	}
 
 	@Override
@@ -142,7 +161,7 @@ public class Digicode extends UIContainer<Digicode>
 		String code = StringUtils.repeat(' ', 6 - enteredCode.length()) + enteredCode;
 
 		renderer.currentComponent = this;
-		renderer.drawRectangle(0, 0, 0, getWidth(), 15, 0x191919, 255);
+		renderer.drawRectangle(0, 0, 0, size().width(), 15, 0x191919, 255);
 		renderer.drawText(MalisisDoors.digitalFont, "888888", bgFontOptions);
 		renderer.drawText(MalisisDoors.digitalFont, code, fontOptions);
 	}

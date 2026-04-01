@@ -259,6 +259,9 @@ public class Door extends BlockDoor implements IBoundingBox, IComponentProvider,
 				if (te == null || te.getDescriptor() == null)
 					return;
 
+				if (block.getDefaultState().canProvidePower() && block != this)
+					te.updatePowered();
+
 				if (te.getDescriptor().getRedstoneBehavior() == RedstoneBehavior.HAND_ONLY
 						|| te.getDescriptor().getRedstoneBehavior() == RedstoneBehavior.REDSTONE_LOCK)
 					return;
@@ -266,9 +269,6 @@ public class Door extends BlockDoor implements IBoundingBox, IComponentProvider,
 				//digicode doors can only be opened by hand
 				if (te.getDescriptor().hasCode())
 					return;
-
-				if (block.getDefaultState().canProvidePower() && block != this)
-					te.updatePowered();
 
 				//center check
 				boolean centered = te.shouldCenter();
